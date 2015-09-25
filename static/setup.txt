@@ -1,0 +1,360 @@
+####################################################################################################
+############################################EasyLogin###############################################
+####################################################################################################
+plugin.tx_dixeasylogin_pi1 {
+  # take a look at the constants for more remarks
+  allowCreate = {$plugin.tx_dixeasylogin_pi1.allowCreate}
+  allowUpdate = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+  user_pid = {$plugin.tx_dixeasylogin_pi1.user_pid}
+  usergroup = {$plugin.tx_dixeasylogin_pi1.usergroup}
+  pid_loginPage = {$plugin.tx_dixeasylogin_pi1.pid_loginPage}
+  extbaseType = {$plugin.tx_dixeasylogin_pi1.extbaseType}
+  trustedDomains = {$plugin.tx_dixeasylogin_pi1.trustedDomains}
+
+  #preserveGETvars = tx_ttnews
+
+  provider {
+	# use this when integrating the default felogin
+    #5 = CONTENTELEMENT
+    #5.name = Spotwizard
+    #5.icon = EXT:dix_easylogin/res/icons/myApp.png
+    #5.uid = {$plugin.tx_dixeasylogin_pi1.uid_felogin}
+    #5.showWhenLoggedIn = 1
+
+    10 = OPENID
+    10.name = Google
+    10.url = https://www.google.com/
+    10.icon = EXT:dix_easylogin/res/icons/google.gif
+    10.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+
+    16 = GOOGLE_HA
+    16.name = Google+
+    16.url = https://www.google.com/
+    16.icon = EXT:dix_easylogin/res/icons/google.gif
+    16.clientID= {$plugin.tx_dixeasylogin_pi1.google_clientID}
+    16.clientSecret = {$plugin.tx_dixeasylogin_pi1.google_clientSecret}
+    16.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+    16.ha_base_url = {$plugin.tx_dixeasylogin_pi1.ha_base_url}
+    16.ha_redirect_url = {$plugin.tx_dixeasylogin_pi1.ha_base_url}
+    16.ha_endpoint_path = {$plugin.tx_dixeasylogin_pi1.ha_endpoint_path}
+    16.ha_provider_name = Google
+    16.ha_debug_mode = 1
+    16.ha_debug_file = /tmp/GOOGLE_HA.log
+    16.t3_provider_name = GOOGLE_HA
+    16.t3_provider_id = 16
+    16.t3_fe_group = {$plugin.tx_dixeasylogin_pi1.google_t3FeGroup}
+    16.profileMap {
+      name = displayName
+      first_name = firstName
+      last_name = lastName
+      gender = empty($userinfo['gender']) ? null: ($userinfo['gender'] == 'male' ? 1 : 2)
+      usergroup = "{$plugin.tx_dixeasylogin_pi1.google_t3FeGroup}"
+      username =  $userinfo['identifier'].'@google'
+      email = empty($userinfo['emailVerified']) ? $userinfo['email'] : $userinfo['emailVerified']
+      date_of_birth = strtotime("{$userinfo['birthDay']}-{$userinfo['birthMonth']}-{$userinfo['birthYear']} UTC")
+      image = current(explode('?', $userinfo['photoURL'])).'?sz=150'
+    }
+    
+    20 = OPENID
+    20.name = Yahoo
+    20.url = https://me.yahoo.com/
+    20.icon = EXT:dix_easylogin/res/icons/yahoo.ico
+    20.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+
+    30 = OPENID
+    30.name = myOpenID
+    30.url = http://###NAME###.myopenid.com/
+    30.icon = EXT:dix_easylogin/res/icons/myopenid.ico
+    30.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+
+    40 = OPENID
+    40.name = Wordpress
+    40.url = http://###NAME###.wordpress.com/
+    40.icon = EXT:dix_easylogin/res/icons/wordpress.ico
+    40.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+
+    50 = FACEBOOK
+    50.name = Facebook
+    50.icon = EXT:dix_easylogin/res/icons/facebook.jpg
+    50.appId = {$plugin.tx_dixeasylogin_pi1.facebook_appID}
+    50.appSecret = {$plugin.tx_dixeasylogin_pi1.facebook_appSecret}
+    50.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+    
+    56 = FACEBOOK_HA
+    56.name = Facebook
+    56.icon = EXT:dix_easylogin/res/icons/facebook.jpg
+    56.appId = {$plugin.tx_dixeasylogin_pi1.facebook_appID}
+    56.appSecret = {$plugin.tx_dixeasylogin_pi1.facebook_appSecret}
+    56.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+    56.ha_base_url = {$plugin.tx_dixeasylogin_pi1.ha_base_url}
+    56.ha_redirect_url = {$plugin.tx_dixeasylogin_pi1.ha_base_url}
+    56.ha_endpoint_path = {$plugin.tx_dixeasylogin_pi1.ha_endpoint_path}
+    56.ha_provider_name = Facebook
+    56.t3_provider_name = FACEBOOK_HA
+    56.ha_debug_mode = 0
+    56.ha_debug_file = /tmp/FACEBOOK_HA.log
+    56.t3_provider_id = 56
+    56.t3_fe_group = {$plugin.tx_dixeasylogin_pi1.facebook_t3FeGroup}
+    56.profileMap {
+      name = displayName
+      first_name = firstName
+      last_name = lastName
+      gender = empty($userinfo['gender']) ? null: ($userinfo['gender'] == 'male' ? 1 : 2)
+      usergroup = "{$plugin.tx_dixeasylogin_pi1.facebook_t3FeGroup}"
+      username =  end(explode('www.facebook.com/', $userinfo['profileURL'])).'@facebook'
+      email = empty($userinfo['emailVerified']) ? $userinfo['email'] : $userinfo['emailVerified']
+      date_of_birth = strtotime("{$userinfo['birthDay']}-{$userinfo['birthMonth']}-{$userinfo['birthYear']} UTC")
+      image = $userinfo['photoURL']
+    }
+    
+    # OAuth Version 1.1 as used by Twitter
+    60 = OAUTH1
+    60.name = Twitter
+    60.icon = EXT:dix_easylogin/res/icons/twitter.gif
+    # sigMethod is one of these: HMAC_SHA1   PLAINTEXT   RSA_SHA1
+    60.sigMethod = HMAC_SHA1
+    60.consumerKey = {$plugin.tx_dixeasylogin_pi1.twitter_consumerKey}
+    60.consumerSecret = {$plugin.tx_dixeasylogin_pi1.twitter_consumerSecret}
+    60.requestTokenUrl = https://api.twitter.com/oauth/request_token
+    60.authorizeUrl = https://api.twitter.com/oauth/authorize
+    60.accessTokenUrl = https://api.twitter.com/oauth/access_token
+    # you can use markers in the requestProfileUrl, the corresponding values from the accessToken-response will be substituted
+    60.requestProfileUrl = https://api.twitter.com/1.1/users/lookup.json?user_id=###user_id###
+    60.profileMap {
+      # format:
+      # key = response parameter
+      # possible keys: fullname, firstname, lastname, suffix, prefix, postcode, country, nickname, email
+      nickname = screen_name
+      fullname = name
+      id = id
+    }
+    60.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+    
+    66 = TWITTER_HA
+    66.name = Twitter
+    66.icon = EXT:dix_easylogin/res/icons//twitter.gif
+    66.consumerKey = {$plugin.tx_dixeasylogin_pi1.twitter_consumerKey}
+    66.consumerSecret = {$plugin.tx_dixeasylogin_pi1.twitter_consumerSecret}
+    66.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+    66.ha_base_url = {$plugin.tx_dixeasylogin_pi1.ha_base_url}
+    66.ha_redirect_url = {$plugin.tx_dixeasylogin_pi1.ha_base_url}
+    66.ha_endpoint_path = {$plugin.tx_dixeasylogin_pi1.ha_endpoint_path}
+    66.ha_provider_name = Twitter
+    66.ha_debug_mode = 0
+    66.ha_debug_file = /tmp/TWITTER_HA.log
+    66.t3_provider_name = TWITTER_HA
+    66.t3_provider_id = 66
+    66.profileMap {
+      name = firstName
+      first_name = current(explode(' ', $userinfo['firstName']))
+      last_name = end(explode(' ', $userinfo['firstName']))
+      usergroup = "{$plugin.tx_dixeasylogin_pi1.twitter_t3FeGroup}"
+      username =  $userinfo['identifier'].'@twitter'
+      email = empty($userinfo['emailVerified']) ? $userinfo['email'] : $userinfo['emailVerified']
+      date_of_birth = strtotime("{$userinfo['birthDay']}-{$userinfo['birthMonth']}-{$userinfo['birthYear']} UTC")
+      image = $userinfo['photoURL']
+    }
+
+    70 = OAUTH1
+    70.name = Xing
+    70.icon = EXT:dix_easylogin/res/icons/xing.png
+    # sigMethod is one of these: HMAC_SHA1   PLAINTEXT
+    70.sigMethod = HMAC_SHA1
+    70.consumerKey = {$plugin.tx_dixeasylogin_pi1.xing_consumerKey}
+    70.consumerSecret = {$plugin.tx_dixeasylogin_pi1.xing_consumerSecret}
+    70.requestTokenUrl = https://api.xing.com/v1/request_token
+    70.authorizeUrl = https://api.xing.com/v1/authorize
+    70.accessTokenUrl = https://api.xing.com/v1/access_token
+    # you can use markers in the requestProfileUrl, the corresponding values from the accessToken-response will be substituted
+    70.requestProfileUrl = https://api.xing.com/v1/users/me
+    70.profileMap {
+      # format:
+      # key = response parameter
+      # possible keys: see https://dev.xing.com/docs/get/users/me
+      nickname = display_name
+      fullname = display_name
+      email = active_email
+      id = id
+    }
+    70.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+    
+    76 = XING_HA
+    76.name = Xing
+    76.icon = EXT:dix_easylogin/res/icons/xing.png
+    76.consumerKey = {$plugin.tx_dixeasylogin_pi1.xing_consumerKey}
+    76.consumerSecret = {$plugin.tx_dixeasylogin_pi1.xing_consumerSecret}
+    76.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+    76.ha_base_url = {$plugin.tx_dixeasylogin_pi1.ha_base_url}
+    76.ha_redirect_url = {$plugin.tx_dixeasylogin_pi1.ha_base_url}
+    76.ha_endpoint_path = {$plugin.tx_dixeasylogin_pi1.ha_endpoint_path}
+    76.ha_provider_name = Xing
+    76.ha_debug_mode = 0
+    76.ha_debug_file = /tmp/XING_HA.log
+    76.t3_provider_name = XING_HA
+    76.t3_provider_id = 76
+    76.profileMap {
+      name = displayName
+      first_name = firstName
+      last_name = lastName
+      gender = empty($userinfo['gender']) ? null: ($userinfo['gender'] == 'm' ? 1 : 2)
+      usergroup = "{$plugin.tx_dixeasylogin_pi1.xing_t3FeGroup}"
+      username =  end(explode('www.xing.com/profile/', $userinfo['profileURL'])).'@xing'
+      email = empty($userinfo['emailVerified']) ? $userinfo['email'] : $userinfo['emailVerified']
+      date_of_birth = strtotime("{$userinfo['birthDay']}-{$userinfo['birthMonth']}-{$userinfo['birthYear']} UTC")
+      image = $userinfo['photoURL']
+    }
+
+    80 = OAUTH2
+    80.name = LinkedIn
+    80.icon = EXT:dix_easylogin/res/icons/linkedin.png
+    # what to request (see https://developer.linkedin.com/documents/authentication)
+    80.scope = r_basicprofile r_emailaddress
+    80.consumerKey = {$plugin.tx_dixeasylogin_pi1.linkedin_consumerKey}
+    80.consumerSecret = {$plugin.tx_dixeasylogin_pi1.linkedin_consumerSecret}
+    80.authorizeUrl = https://www.linkedin.com/uas/oauth2/authorization
+    80.accessTokenUrl = https://www.linkedin.com/uas/oauth2/accessToken
+    80.requestProfileUrl = https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address)
+    80.profileEncoding = XML
+    80.profileMap {
+      # format:
+      # key = response parameter
+      # possible keys: see https://developer.linkedin.com/documents/profile-fields
+      firstname = first-name
+      lastname = last-name
+      email = email-address
+      id = id
+    }
+    80.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+
+    150 = OAUTH2
+    150.name = facebook
+    150.icon = EXT:dix_easylogin/res/icons/facebook.jpg
+    150.scope = email
+    150.authorizeUrl = https://www.facebook.com/dialog/oauth
+    150.accessTokenUrl = https://graph.facebook.com/oauth/access_token
+    150.requestProfileUrl = https://graph.facebook.com/me
+    150.profileEncoding = JSON
+    150.profileMap {
+      # format:
+      # key = response parameter
+      # possible keys: see https://developers.facebook.com/docs/graph-api/reference/v2.0/user
+      firstname = first_name
+      lastname = last_name
+      nickname = name
+      fullname = name
+      email = email
+      id = id
+    }
+    150.consumerKey = {$plugin.tx_dixeasylogin_pi1.facebook_appID}
+    150.consumerSecret = {$plugin.tx_dixeasylogin_pi1.facebook_appSecret}
+    150.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+
+    90 = OAUTH2
+    90.name = Google (OAuth2)
+    90.icon = EXT:dix_easylogin/res/icons/google.gif
+    90.scope = openid email profile
+    90.authorizeUrl = https://accounts.google.com/o/oauth2/auth
+    90.accessTokenUrl = https://accounts.google.com/o/oauth2/token
+    # google saves profile information within the response with the accesstoken - ID_TOKEN is a keyword to use this algorithm
+    90.requestProfileUrl = https://www.googleapis.com/plus/v1/people/me
+    90.profileEncoding = JSON
+    90.profileMap {
+      # format:
+      # key = response parameter
+      # possible keys: see https://developers.google.com/+/api/latest/people/getOpenIdConnect
+      email = emails.0.value
+      id = id
+      fullname = display_name
+      firstname = name.given_name
+      lastname = name.family_name
+    }
+    90.consumerKey = {$plugin.tx_dixeasylogin_pi1.google_clientID}
+    90.consumerSecret = {$plugin.tx_dixeasylogin_pi1.google_clientSecret}
+    90.showWhenLoggedIn = {$plugin.tx_dixeasylogin_pi1.allowUpdate}
+  }
+
+  # possible values: nickname,email,fullname,postcode,country,prefix,firstname,lastname,suffix
+  # possible by OpenID, but not used in fe_users: dob (date of birth), gender, language, timezone
+  optionalInfo = nickname,email,fullname,postcode,country,prefix,firstname,lastname,suffix
+  requiredInfo = nickname,email,fullname,postcode,country,prefix,firstname,lastname,suffix$
+
+  template_path = EXT:dix_easylogin/templates
+}
+
+page.2 = USER_INT
+page.2 {
+  userFunc = tx_dixeasylogin_pi1->sendXrdsHeader
+  pid < plugin.tx_dixeasylogin_pi1.pid_loginPage
+}
+
+#Load/include jQuery libs only on easy login page...
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.include_jQuery}] && [globalVar = TSFE:id = 104]
+  page.includeJSlibs.jQuery = https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js
+  page.includeJSlibs.jQuery.external = 1
+
+  page.includeJSlibs.jQueryUI = http://code.jquery.com/ui/1.9.2/jquery-ui.js
+  page.includeJSlibs.jQueryUI.external = 1
+
+  page.includeCSS.jQueryUI = http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css
+  page.includeCSS.jQueryUI.external = 1
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.felogin}]
+  plugin.tx_dixeasylogin_pi1.provider.5 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.google}]
+  plugin.tx_dixeasylogin_pi1.provider.10 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.googleha}]
+  plugin.tx_dixeasylogin_pi1.provider.16 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.yahoo}]
+  plugin.tx_dixeasylogin_pi1.provider.20 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.myopenid}]
+  plugin.tx_dixeasylogin_pi1.provider.30 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.wordpress}]
+  plugin.tx_dixeasylogin_pi1.provider.40 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.facebook}]
+  plugin.tx_dixeasylogin_pi1.provider.50 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.facebookha}]
+  plugin.tx_dixeasylogin_pi1.provider.56 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.twitter}]
+  plugin.tx_dixeasylogin_pi1.provider.60 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.twitterha}]
+  plugin.tx_dixeasylogin_pi1.provider.66 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.xing}]
+  plugin.tx_dixeasylogin_pi1.provider.70 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.xingha}]
+  plugin.tx_dixeasylogin_pi1.provider.76 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.linkedin}]
+  plugin.tx_dixeasylogin_pi1.provider.80 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.facebook_oauth2}]
+  plugin.tx_dixeasylogin_pi1.provider.150 >
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_dixeasylogin_pi1.disable.google_oauth2}]
+  plugin.tx_dixeasylogin_pi1.provider.90 >
+[global]

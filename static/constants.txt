@@ -1,0 +1,57 @@
+plugin.tx_dixeasylogin_pi1{
+  # if jQuery, jQueryUI and the lightness theme should be included by default.
+  # if turned off, you have to take care for yourself that the libraries
+  # are loaded (smart if other extensions also include jQuery)
+  include_jQuery = 1
+  # if the user should be created when not already found in the database
+  allowCreate = 1
+  allowUpdate = 1
+  # create user only if email address matches this domain(s). e.g. "example.com, *.mycompany.org"
+  trustedDomains = *
+  # where the fe_users records should be stored when created
+  user_pid = 
+  # page where the "easylogin" plugin is located
+  # used for the xrds definition
+  pid_loginPage = 
+  # HybidAuth specific configuration
+  ha_base_url = http://dev.yourDomain.org
+  #ha_redirect_url = http://dev.yourDomain.org
+  ha_endpoint_path = /typo3conf/ext/dix_easylogin/res/hybridauth/hybridauth/
+  # uid of the common login
+  uid_felogin = 
+  google_clientID = 
+  google_clientSecret = 
+  #google_applicationName = yourDomain.org
+  #google_redirectUrl = http://dev.yourDomain.org/logon.html
+  #google_developerKey = 
+  # list (csv) member groups of fresh users
+  google_t3FeGroup = 16,25
+  facebook_appID = 
+  facebook_appSecret = 
+  # list (csv) member groups of fresh users
+  facebook_t3FeGroup = 17,25
+  twitter_consumerKey = 
+  twitter_consumerSecret = 
+  # list (csv) member groups of fresh users
+  twitter_t3FeGroup = 18,25
+  xing_consumerKey = 
+  xing_consumerSecret = 
+  # list (csv) member groups of fresh users
+  xing_t3FeGroup = 19,25
+  disable.felogin = 0
+  disable.google = 1
+  disable.gplus = 1
+  disable.googleha = 0
+  disable.yahoo = 1
+  disable.myopenid = 1
+  disable.wordpress = 1
+  disable.xing = 1
+  disable.xingha = 1
+  disable.facebook = 1
+  disable.facebookha = 0
+  disable.facebook_oauth2 = 1
+  disable.twitter = 1
+  disable.twitterha = 0
+  disable.linkedin = 1
+  disable.google_oauth2 = 1
+}
