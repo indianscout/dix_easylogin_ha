@@ -40,8 +40,10 @@ class tx_dixeasylogin_div_hybrid_auth_hooks{
 	
 	function logout() {
 		session_start();
-		Hybrid_Auth::logoutAllProviders();
-		$GLOBALS['TSFE']->fe_user->removeSessionData();
+		if(isset($GLOBALS['TSFE']->fe_user)){
+			Hybrid_Auth::logoutAllProviders();
+			$GLOBALS['TSFE']->fe_user->removeSessionData();
+		}//else, no T3 and HA session to destroy...
 		session_destroy();
 	}
 }
